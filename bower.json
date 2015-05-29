@@ -1,0 +1,9 @@
+{
+  "name": "MlBackboneUtils",
+  "version": "0.1.0",
+  "main": "utils/base.js",
+  "authors": [
+    "Mattakorn Limkool"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,37 @@
+<div class="modal">
+    <div class="modal-dialog loading-container" data-bind="css: {'loading-modal': action() == 'loading'}">
+        <div class="modal-content">
+            <!--<div class="modal-header">-->
+                <!--<h4 class="modal-title">Loading....</h4>-->
+            <!--</div>-->
+            <div class="modal-body">
+                <!-- ko if: action() == 'loading' -->
+                <div class="alert text-center" role="alert">
+                    <i class="fa fa-spinner fa-spin"></i> <label data-bind="text: loadingMessage"></label>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: action() == 'success' -->
+                <div class="alert" role="alert">
+                    <img  src="images/accept.png"> <label data-bind="text: successMessage"></label>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="pull-right btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+                <!-- /ko -->
+
+                <!-- ko if: action() == 'error' -->
+                <div class="alert" role="alert">
+                    <img  src="images/exclamation.gif"> <label data-bind="text: errorMessage"></label>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="pull-right btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+                <!-- /ko -->
+
+            </div>
+        </div>
+    </div>
+</div>
