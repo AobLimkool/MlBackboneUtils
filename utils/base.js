@@ -97,9 +97,13 @@ define(function(reqiure) {
             return result;
         },
 
-        redirect: function(route){
+        redirect: function(route, isExternalRedirect){
+            isExternalRedirect = Utils.isEmpty(isExternalRedirect) ? false : isExternalRedirect;
             if(Application.config.multiPage){
-                window.location = Application.config.rootUrl + route;
+                if(isExternalRedirect)
+                    window.location = route;
+                else
+                    window.location = Application.config.rootUrl + route;
 //            Application.router.navigate(route);
 //            Application.views.mainView.hide();
 //            window.location.reload();
@@ -113,14 +117,17 @@ define(function(reqiure) {
          * - replace url with param property
          * @param url - url/?param=1
          * @param params - {param: 2}
+         * @param isAbsolute - default is false
          * @returns {*} -  url/?param=2
          */
-        replaceUrlParams: function(url, params){
+        replaceUrlParams: function(url, params, isAbsolute){
+            isAbsolute = Utils.isEmpty(isAbsolute) ? false : isAbsolute;
+
             var queryParams = Utils.urlQueryParams(url);
-            var baseUrl = Utils.baseUrl(url);
+            var baseUrl = isAbsolute ? Utils.baseUrl(url) : '';
 
             var newParams = Utils.obj.merge(queryParams, params);
-            return baseUrl + $.param(newParams);
+            return baseUrl + '?' + $.param(newParams);
         },
 
         /**
@@ -162,13 +169,26 @@ define(function(reqiure) {
 
         baseUrl: function(urlString){
             var baseUrl = '';
-            if(_.isUndefined(urlString)){
+            if(Utils.isEmpty(urlString)){
                 baseUrl = window.location.origin + window.location.pathname;
             }else{
                 var urlSplit = urlString.split("?");
                 baseUrl = urlSplit[0];
             }
             return baseUrl;
+        },
+        currentQueryString: function(){
+            return window.location.search;
+        },
+        currentUrl: function(isAbsolute){
+            isAbsolute = Utils.isEmpty(isAbsolute) ? false : isAbsolute;
+            if(isAbsolute){
+                return window.location.href;
+            }else{
+
+                return window.location.pathname + window.location.search;
+            }
+
         },
 
         obj: {
