@@ -1,7 +1,7 @@
 /**
  * Utilities
  * @author Mattakorn Limkool
- * @dependency underscore js, ko, ko.mapping, Backbone, momentjs
+ * @dependency jQuery, underscore js, ko, ko.mapping, Backbone, momentjs
  *
  */
 define(function(reqiure) {
@@ -15,7 +15,6 @@ define(function(reqiure) {
             timeDefault: '00:00',
             timeDefaultFormat: 'HH:mm',
         },
-        test: {},
 
         /**
          * clone javascript object
@@ -110,18 +109,39 @@ define(function(reqiure) {
 
         },
 
-        setUrlParams: function(url, params){
-            var queryString = this.urlQueryString(url);
-            for(queryString in proc){
+        /**
+         * - replace url with param property
+         * @param url - url/?param=1
+         * @param params - {param: 2}
+         * @returns {*} -  url/?param=2
+         */
+        replaceUrlParams: function(url, params){
+            var queryParams = Utils.urlQueryParams(url);
+            var baseUrl = Utils.baseUrl(url);
 
-            }
+            var newParams = Utils.obj.merge(queryParams, params);
+            return baseUrl + $.param(newParams);
         },
 
-        urlQueryString : function (query) {
+        /**
+         *
+         * @param urlString | null = current url
+         * @returns {param1: 'val1', param2: 'val2'}
+         */
+        urlQueryParams : function (urlString) {
             // This function is anonymous, is executed immediately and
             // the return value is assigned to QueryString!
             var query_string = {};
-            var query = _.isUndefined(query) ? window.location.search.substring(1): query.search.substring(1);
+            var query = '';
+            if(_.isUndefined(urlString)){
+//                query_string['baseUrl'] = window.location.origin + window.location.pathname;
+                query = window.location.search.substring(1);
+            }else{
+                var urlSplit = urlString.split("?");
+//                query_string['baseUrl'] = urlSplit[0];
+                query = urlSplit[1];
+            }
+
             var vars = query.split("&");
             for (var i=0;i<vars.length;i++) {
                 var pair = vars[i].split("=");
@@ -138,6 +158,17 @@ define(function(reqiure) {
                 }
             }
             return query_string;
+        },
+
+        baseUrl: function(urlString){
+            var baseUrl = '';
+            if(_.isUndefined(urlString)){
+                baseUrl = window.location.origin + window.location.pathname;
+            }else{
+                var urlSplit = urlString.split("?");
+                baseUrl = urlSplit[0];
+            }
+            return baseUrl;
         },
 
         obj: {
@@ -157,11 +188,29 @@ define(function(reqiure) {
                         }
                     }
                 }else{
-                    this.debug("Error, loopProperties(Obj, Callback), please send obj at first parameter.");
+                    Utils.debug("Error, loopProperties(Obj, Callback), please send obj at first parameter.");
                     return;
                 }
 
                 return resultObj;
+            },
+            /**
+             * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
+             * @param obj1
+             * @param obj2
+             * @returns obj3 a new object based on obj1 and obj2
+             */
+            merge: function(obj1,obj2){
+                if(_.isObject(obj1) && _.isObject(obj2)){
+                    var obj3 = {};
+                    for (var attrName in obj1) { obj3[attrName] = obj1[attrName]; }
+                    for (var attrName in obj2) { obj3[attrName] = obj2[attrName]; }
+                    return obj3;
+                }else{
+                    Utils.debug('Obj1 and Obj2 must be Object');
+                    return;
+                }
+
             }
         },
 
