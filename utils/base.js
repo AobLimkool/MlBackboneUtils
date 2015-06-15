@@ -15,6 +15,7 @@ define(function(reqiure) {
             timeDefault: '00:00',
             timeDefaultFormat: 'HH:mm',
         },
+        test: {},
 
         /**
          * clone javascript object
