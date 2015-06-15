@@ -5,9 +5,9 @@
  *
  */
 define(function(reqiure) {
-	'use strict';
+    'use strict';
 
-	var Utils = {
+    var Utils = {
         /**
          * const of util
          */
@@ -107,6 +107,67 @@ define(function(reqiure) {
                 Application.router.navigate(route);
             }
 
+        },
+
+        setUrlParams: function(url, params){
+            var queryString = this.urlQueryString(url);
+            for(queryString in proc){
+
+            }
+        },
+
+        urlQueryString : function (query) {
+            // This function is anonymous, is executed immediately and
+            // the return value is assigned to QueryString!
+            var query_string = {};
+            var query = _.isUndefined(query) ? window.location.search.substring(1): query.search.substring(1);
+            var vars = query.split("&");
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                // If first entry with this name
+                if (typeof query_string[pair[0]] === "undefined") {
+                    query_string[pair[0]] = pair[1];
+                    // If second entry with this name
+                } else if (typeof query_string[pair[0]] === "string") {
+                    var arr = [ query_string[pair[0]], pair[1] ];
+                    query_string[pair[0]] = arr;
+                    // If third or later entry with this name
+                } else {
+                    query_string[pair[0]].push(pair[1]);
+                }
+            }
+            return query_string;
+        },
+
+        obj: {
+            /**
+             *
+             * @param obj
+             * @param callback (property, value, obj)
+             * @returns {*}
+             */
+            loopProperties: function( obj, callback ){
+                if(_.isObject(obj)){
+                    var resultObj = _.clone(obj);
+                    for(var property in obj){
+                        if(obj.hasOwnProperty(property)){
+                            var value = obj[property];
+                            resultObj[property] = callback(property, value, obj);
+                        }
+                    }
+                }else{
+                    this.debug("Error, loopProperties(Obj, Callback), please send obj at first parameter.");
+                    return;
+                }
+
+                return resultObj;
+            }
+        },
+
+        debug: function(debugMessage){
+            console.info("=========== DEBUG: Utils ==============");
+            console.log(debugMessage);
+            console.info("=========== END DEBUG: Utils ==========");
         },
 
         /**
@@ -341,5 +402,5 @@ define(function(reqiure) {
 
     };
 
-	return Utils;
+    return Utils;
 });
